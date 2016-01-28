@@ -53,7 +53,7 @@ module.exports = function (context, callback) {
         request.post({url: responseUrl, method: 'POST', json: true, body: data});
     });
 
-    var req = https.get('https://www.goodreads.com/search/index.xml?key=' + context.data.GOODREADS_TOKEN + '&q=' + title, function (res) {
+    var req = https.get('https://www.goodreads.com/search/index.xml?key=V0xMCsWPQx5V8S1TXoEw&q=' + title, function (res) {
         res.on('data', function (data) {
             parser.parseString(data);
         });
