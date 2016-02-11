@@ -17,7 +17,7 @@ module.exports = function (context, callback) {
     'use strict';
 
     if (context.data.SLACK_TOKEN !== context.data.token) {
-        callback('Slack token does not match');
+        return( callback('Slack token does not match') );
     }
 
     // Passed from Slack Command
@@ -58,11 +58,11 @@ module.exports = function (context, callback) {
             parser.parseString(data);
         });
 
-        callback(null, 'Fetching Data...');
+        return( callback(null, 'Fetching Data...') );
     });
     req.end();
 
     req.on('error', function (e) {
-        callback(e);
+        return( callback(e) );
     });
 };
