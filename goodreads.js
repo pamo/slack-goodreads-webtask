@@ -1,8 +1,7 @@
-var https = require('https');
+var request = require('request');
 var parser = require('xml2js@0.2.8').Parser({ignoreAttrs: true, mergeAttrs: true});
 var url = require('url');
 var util = require('util');
-var request = require('request');
 
 
 /**
@@ -29,10 +28,9 @@ module.exports = function (context, callback) {
         var response = result.GoodreadsResponse.search[0].results[0].work[0].best_book[0];
         var found_title = response.title[0];
         var title_url = url.parse(found_title).href;
-        var data = {};
 
         if (typeof response !== 'undefined') {
-            data = {
+            request.post({url: responseUrl, method: 'POST', json: true, body: {
                 'response_type': 'in_channel',
                 'text': util.format('*Goodreads*: %s attempted to reference *%s* from Goodreads. This was the closest match we could find.', user, title),
                 'attachments': [
@@ -42,18 +40,16 @@ module.exports = function (context, callback) {
                         'thumb_url': response.small_image_url[0]
                     }
                 ]
-            };
+            }});
         } else {
-            data = {
+            request.post({url: responseUrl, method: 'POST', json: true, body: {
                 'response_type': 'ephemeral',
                 'text': 'The book you were looking for cannot be found.'
-            };
+            }});
         }
-
-        request.post({url: responseUrl, method: 'POST', json: true, body: data});
     });
 
-    var req = https.get('https://www.goodreads.com/search/index.xml?key=V0xMCsWPQx5V8S1TXoEw&q=' + title, function (res) {
+    var req = request.get('https://www.goodreads.com/search/index.xml?key=V0xMCsWPQx5V8S1TXoEw&q=' + title, function (res) {
         res.on('data', function (data) {
             parser.parseString(data);
         });
