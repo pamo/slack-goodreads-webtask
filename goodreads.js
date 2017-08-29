@@ -14,10 +14,10 @@ var util = require('util');
  */
 module.exports = function (context, callback) {
     'use strict';
-
-    if (context.data.SLACK_TOKEN !== context.data.token) {
-        return(callback(`Slack token ${context.data.SLACK_TOKEN} does not match ${context.data.token}`));
-    }
+// Removing the slack token check for testing
+//    if (context.data.SLACK_TOKEN !== context.data.token) {
+//        return(callback(`Slack token ${context.data.SLACK_TOKEN} does not match ${context.data.token}`));
+//    }
 
     // Passed from Slack Command
     var title = context.data.text;
