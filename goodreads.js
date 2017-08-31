@@ -12,17 +12,11 @@ var util = require('util');
  * influenced by an Amazon deal, so results will not always return what
  * has been searched for.
  */
-module.exports = function (context, callback) {
+module.exports = function ({ data }, callback) {
     'use strict';
-// Removing the slack token check for testing
-//    if (context.data.SLACK_TOKEN !== context.data.token) {
-//        return(callback(`Slack token ${context.data.SLACK_TOKEN} does not match ${context.data.token}`));
-//    }
 
     // Passed from Slack Command
-    var title = context.data.text;
-    var user = context.data.user_name;
-    var responseUrl = context.data.response_url;
+    const { title, user_name: user, response_url: responseUrl } = data;
 
     parser.addListener('end', function (result) {
         var response = result.GoodreadsResponse.search[0].results[0].work[0].best_book[0];
@@ -49,16 +43,16 @@ module.exports = function (context, callback) {
         }
     });
 
-    var req = request.get('https://www.goodreads.com/search/index.xml?key=V0xMCsWPQx5V8S1TXoEw&q=' + title, function (res) {
+    var req = request.get(`https://www.goodreads.com/search/index.xml?key=V0xMCsWPQx5V8S1TXoEw&q=${title}`, function (res) {
         res.on('data', function (data) {
             parser.parseString(data);
         });
 
-        return( callback(null, 'Fetching Data...') );
+        return(callback(null, 'Fetching Data...'));
     });
     req.end();
 
     req.on('error', function (e) {
-        return( callback(e) );
+        return(callback(e));
     });
 };
